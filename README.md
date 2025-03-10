@@ -257,6 +257,8 @@ Baixar as imagens node.js e mongodb:
 Ao criar os containers especificar a rede que irá utilizar:
 - docker run -dti --name nod --network nodmon node
 - docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
+
+Sintaxe:
 - docker run -dti --name nome-container --network nome_da_rede nome-imagem
 
 ![medio_1.8.png](png/8.png)
@@ -277,8 +279,9 @@ apt get-install -y iputils-ping
 
 Por fim é só pingar e ver o resultado:
 
-container com o node.js ip: 172.18.0.2
-container com o mongodb ip:  172.18.0.3
+Container com o node.js ip: 172.18.0.2
+
+Container com o mongodb ip:  172.18.0.3
 
 ![medio_1.10.png](png/10.png)
 
