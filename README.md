@@ -121,12 +121,12 @@ Primeiro criar um volume para guardar as informações do mysql:
 
      **Explicação `docker run`:**
     ```
-- -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
-- --name mysql1  > voce está dando um nome ao container
-- -d  > falando que vai funcionar background
-- -p 3306-3306  > está especificando a porta de entrada e saida do container
--  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
-- mysql > passando o nome da imagem do container que será utilizada
+    -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
+    - --name mysql1  > voce está dando um nome ao container
+    - -d  > falando que vai funcionar background
+    - -p 3306-3306  > está especificando a porta de entrada e saida do container
+    -  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
+    - mysql > passando o nome da imagem do container que será utilizada
     ```
 
 Entrar dentro do container_1 utilizando o bash (mysql1):
@@ -139,27 +139,28 @@ Entrar dentro do mysql:
 
 
 **comandos `mysql` utilizados:**
+
     ```
--- mostra todas as databases
-show databases;
--- cria a database fazenda
-create database fazenda;
--- especifica a database que será utilizada
-use fazenda;
-
--- cria a tabela horta
-CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
-
--- preenche os valores na tabela horta
-INSERT INTO horta VALUES (1, 'Batata', 5);
-INSERT INTO horta VALUES (2, 'Banana', 12);
+    -- mostra todas as databases
+    show databases;
+    -- cria a database fazenda
+    create database fazenda;
+    -- especifica a database que será utilizada
+    use fazenda;
+    
+    -- cria a tabela horta
+    CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
+    
+    -- preenche os valores na tabela horta
+    INSERT INTO horta VALUES (1, 'Batata', 5);
+    INSERT INTO horta VALUES (2, 'Banana', 12);
     ```
 
-[medio_1.2.png](png/2.png)
+![medio_1.2.png](png/2.png)
 
 Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
 
-[medio_1.3.png](png/3.png)
+![medio_1.3.png](png/3.png)
 
 **Comandos utilizados no segundo container (mysql2):**
 ```
@@ -168,7 +169,7 @@ show databases;
 SELECT * FROM horta WHERE qtd >= 5;
 ```
 
-[medio_1.4.png](png/4.png)
+![medio_1.4.png](png/4.png)
 
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
@@ -227,11 +228,13 @@ ENTRYPOINT ./app.go
 
 Criar a imagem baseado no dockerfile:
 - docker image build -t nome-imagem .
-![[png/5.png]]
+
+![medio_1.5.png](png/5.png)
 
 Iniciar o container:
 - docker run -ti --name nome-container nome-imagem
-![[png/6.png]]
+
+![medio_1.6.png](png/6.png)
 
 7. **Construindo uma rede Docker para comunicação entre containers**
     - Crie uma rede Docker personalizada e faça dois containers, um **Node.js** e um **MongoDB**, se comunicarem.
@@ -249,17 +252,19 @@ Baixar as imagens node.js e mongodb:
 - docker pull node
 - docker pull mongodb/mongodb-community-server
 
-![[png/7.png]]
+![medio_1.7.png](png/7.png)
 
 Ao criar os containers especificar a rede que irá utilizar:
 - docker run -dti --name nod --network nodmon node
 - docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
 - docker run -dti --name nome-container --network nome_da_rede nome-imagem
 
-![[png/8.png]]
+![medio_1.8.png](png/8.png)
 
 - docker network inspect nomerede (mostra quais containers estão na rede especifica)
-![[png/9.png]]
+
+![medio_1.9.png](png/9.png)
+
 
 Entrar no container:
 - docker exec -ti nome_do_caontainer bash
@@ -275,7 +280,7 @@ Por fim é só pingar e ver o resultado:
 container com o node.js ip: 172.18.0.2
 container com o mongodb ip:  172.18.0.3
 
-![[png/10.png]]
+![medio_1.10.png](png/10.png)
 
 8. **Criando um compose file para rodar uma aplicação com banco de dados**
     - Utilize **Docker Compose** para configurar uma aplicação **Django** com um banco de dados **PostgreSQL**.
@@ -372,7 +377,7 @@ footer {
 - cp site.tar ../
 - rm --Rf site
 
-![[png/11.png]]
+![medio_1.11.png](png/11.png)
 
 Dentro da pasta debian-apache:
 - criar um dockerfile
@@ -408,4 +413,4 @@ Criar a imagem:
 Executar o container e ser feliz:
 - docker run -dti -p 80:80 --name nome-container nome-imagem
 
-![[png/final.png]]
+![dificil.1.png](png/final.png)
