@@ -135,7 +135,7 @@ Entrar dentro do container_1 utilizando o bash (mysql1):
 Entrar dentro do mysql:
 -  mysql -u root -p --protocol=tcp --port=3306
 
-[medio_1.png](png/1.png)
+ ![medio_1.png](png/1.png)
 
 **comandos `mysql` utilizados:**
 
@@ -153,11 +153,11 @@ Entrar dentro do mysql:
     INSERT INTO horta VALUES (2, 'Banana', 12);
     ```
 
-[medio_1.2.png](png/2.png)
+ ![medio_1.2.png](png/2.png)
 
 Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
 
-[medio_1.3.png](png/3.png)
+ ![medio_1.3.png](png/3.png)
 
 **Comandos utilizados no segundo container (mysql2):**
 ```
@@ -166,7 +166,7 @@ show databases;
 SELECT * FROM horta WHERE qtd >= 5;
 ```
 
-[medio_1.4.png](png/4.png)
+ ![medio_1.4.png](png/4.png)
 
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
