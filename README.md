@@ -114,6 +114,62 @@
     - Execute um container **MySQL** e configure um volume para armazenar os dados do banco de forma persistente.
     - 🔹 _Exemplo de aplicação:_ Use o sistema de login e cadastro do [Laravel Breeze](https://github.com/laravel/breeze), que usa MySQL.
 
+Primeiro criar um volume para guardar as informações do mysql:
+ - docker volume create nome-do-volume
+ - docker volume ls (vai listar os volumes)
+ - docker run -e MYSQL_ROOT_PASSWORD=0311 -dti -p 3306-3306 --name nome-container --mount type=volume,src=mysql,dst=/var/lib/mysql mysql
+
+     **Explicação `docker run`:**
+    ```
+- -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
+- --name mysql1  > voce está dando um nome ao container
+- -d  > falando que vai funcionar background
+- -p 3306-3306  > está especificando a porta de entrada e saida do container
+-  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
+- mysql > passando o nome da imagem do container que será utilizada
+    ```
+
+Entrar dentro do container_1 utilizando o bash (mysql1):
+- docker exec -ti nome_do_caontainer bash
+
+Entrar dentro do mysql:
+-  mysql -u root -p --protocol=tcp --port=3306
+
+[medio_1.png](png/1.png)
+
+
+**comandos `mysql` utilizados:**
+    ```
+-- mostra todas as databases
+show databases;
+-- cria a database fazenda
+create database fazenda;
+-- especifica a database que será utilizada
+use fazenda;
+
+-- cria a tabela horta
+CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
+
+-- preenche os valores na tabela horta
+INSERT INTO horta VALUES (1, 'Batata', 5);
+INSERT INTO horta VALUES (2, 'Banana', 12);
+    ```
+
+[medio_1.2.png](png/2.png)
+
+Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
+
+[medio_1.3.png](png/3.png)
+
+**Comandos utilizados no segundo container (mysql2):**
+```
+show databases;
+-- Mostra os valores dos alimentos com quantidade maior que 5
+SELECT * FROM horta WHERE qtd >= 5;
+```
+
+[medio_1.4.png](png/4.png)
+
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
     - 🔹 _Exemplo de aplicação:_ Compile e rode a API do [Go Fiber Example](https://github.com/gofiber/recipes/tree/main/docker-multistage-build) dentro do container.
