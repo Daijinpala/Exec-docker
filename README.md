@@ -120,13 +120,13 @@ Primeiro criar um volume para guardar as informações do mysql:
  - docker run -e MYSQL_ROOT_PASSWORD=0311 -dti -p 3306-3306 --name nome-container --mount type=volume,src=mysql,dst=/var/lib/mysql mysql
 
      **Explicação `docker run`:**
-    ```
-- -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
-- --name mysql1  > voce está dando um nome ao container
-- -d  > falando que vai funcionar background
-- -p 3306-3306  > está especificando a porta de entrada e saida do container
--  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
-- mysql > passando o nome da imagem do container que será utilizada
+    ```bash
+     -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
+    --name mysql1  > voce está dando um nome ao container
+    -d  > falando que vai funcionar background
+    -p 3306-3306  > está especificando a porta de entrada e saida do container
+    type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
+    mysql > passando o nome da imagem do container que será utilizada
     ```
 
 Entrar dentro do container_1 utilizando o bash (mysql1):
@@ -137,22 +137,20 @@ Entrar dentro do mysql:
 
 [medio_1.png](png/1.png)
 
-
 **comandos `mysql` utilizados:**
-    ```
--- mostra todas as databases
-show databases;
--- cria a database fazenda
-create database fazenda;
--- especifica a database que será utilizada
-use fazenda;
 
--- cria a tabela horta
-CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
-
--- preenche os valores na tabela horta
-INSERT INTO horta VALUES (1, 'Batata', 5);
-INSERT INTO horta VALUES (2, 'Banana', 12);
+    ```mysql
+    - mostra todas as databases
+    show databases;
+    -- cria a database fazenda
+    create database fazenda;
+    -- especifica a database que será utilizada
+    use fazenda;
+    -- cria a tabela horta
+    CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
+    -- preenche os valores na tabela horta
+    INSERT INTO horta VALUES (1, 'Batata', 5);
+    INSERT INTO horta VALUES (2, 'Banana', 12);
     ```
 
 [medio_1.2.png](png/2.png)
