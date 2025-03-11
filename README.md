@@ -205,7 +205,7 @@ fmt.Printf("Oi, %s! Eu sou a linguagem Go", name)
 
 nano dockerfile:
 ```
-FROM golang as exec
+FROM golang:1.24 as exec
 
 COPY app.go /go/src/app/
 
@@ -215,7 +215,7 @@ WORKDIR /go/src/app/
 
 RUN go build -o app.go .
 
-FROM alpine
+FROM alpine:3.21
 
 WORKDIR /appexec
 
@@ -387,7 +387,7 @@ Dentro da pasta debian-apache:
 
 dockerfile:
 ```
-FROM debian
+FROM debian:12
 
 RUN apt-get update && apt-get install -y apache2 && apt-get clean
 
