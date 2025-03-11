@@ -1,7 +1,10 @@
 # **Exercícios Docker**
 
 > [!IMPORTANT]
-> Nunca deixar na versão `latest` pois tem aplicações que só funcionaram em uma versão especifica, e como o `latest` sempre busca a ultima versão disponivel, pode causar uma Quebra de compatibilidade (breakage of compatibility).
+> Nunca deixar na versão `latest`, por ter aplicações que só funcionaram em uma versão específica, e como o `latest` sempre busca a última versão disponível, pode causar uma Quebra de compatibilidade (se você colocar somente o nome da distribuição sem tag, irá buscar a última versão disponível também).
+
+> [!NOTE]
+> Estudar como utilizar um usuário não root em um container.
 
 ### 🟢 **Fácil**
 
