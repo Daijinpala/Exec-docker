@@ -81,7 +81,7 @@
 
     **Dockerfile:**
     ```dockerfile
-    FROM ubuntu
+    FROM ubuntu:noble
 
     RUN apt update && apt upgrade -y && apt install -y python3 && apt install nano -y && apt clean
 
