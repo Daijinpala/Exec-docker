@@ -1,5 +1,8 @@
 # **Exercícios Docker**
 
+> [!IMPORTANT]
+> Nunca deixar na versão `latest` pois tem aplicações que só funcionaram em uma versão especifica, e como o `latest` sempre busca a ultima versão disponivel, pode causar uma Quebra de compatibilidade (breakage of compatibility).
+
 ### 🟢 **Fácil**
 
 1. **Rodando um container básico**
@@ -11,7 +14,7 @@
     
     - Comandos:
       ```bash
-      docker pull nginx
+      docker pull nginx:1.27
       docker run --name nome-container -d -p 8080:80 nome-imagem
       ```
       
@@ -28,7 +31,7 @@
     - Documentação: [Ubuntu Docker Hub](https://hub.docker.com/_/ubuntu)
     - Comandos:
       ```bash
-      docker pull ubuntu
+      docker pull ubuntu:noble
       docker run -dti --name meu-container nome_da_imagem
       docker exec -ti nome_do_container bash
       ```
