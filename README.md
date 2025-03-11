@@ -262,7 +262,7 @@ Baixar as imagens node.js e mongodb:
 
 Ao criar os containers especificar a rede que irá utilizar:
 - docker run -dti --name nod --network nodmon node
-- docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
+- docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server
 
 Sintaxe:
 - docker run -dti --name nome-container --network nome_da_rede nome-imagem
