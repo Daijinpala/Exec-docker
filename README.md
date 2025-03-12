@@ -6,9 +6,6 @@
 > [!NOTE]
 > Estudar como utilizar um usuário não root em um container.
 
-
-# **Exercícios Docker**
-
 ### 🟢 **Fácil**
 
 1. **Rodando um container básico**
