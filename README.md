@@ -294,7 +294,50 @@ Container com o mongodb ip:  172.18.0.3
 8. **Criando um compose file para rodar uma aplicação com banco de dados**
     - Utilize **Docker Compose** para configurar uma aplicação **Django** com um banco de dados **PostgreSQL**.
     - 🔹 _Exemplo de aplicação:_ Use o projeto [Django Polls App](https://github.com/databases-io/django-polls "https://github.com/databases-io/django-polls") para criar uma pesquisa de opinião integrada ao banco.
+flavor:
+- Criar um volume para guardar os dados do banco (docker volume create nome-volume)
+- Criar uma pasta para guardar futuros `compose` (compose)
+- Criar uma pasta especifica para o desafio 8 (exe8)
+- Criar um arquivo `docker-compose.yml`
 
+nano `docker-compose.yml`: 
+```
+services:
+  post:
+    image: postgres:14.17
+    environment:
+      POSTGRES_PASSWORD: "Senha123"
+      POSTGRES_DB: "fazenda"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    networks:
+      - pesca
+
+  django:
+    image: django:onbuild
+    ports:
+      - 8000:8000
+    networks:
+      - pesca
+
+networks:
+  pesca:
+    driver: bridge
+
+volumes:
+  postgresql:
+```
+
+Agora fora do nano e dentro da pasta do nosso arquivo docker-compose
+
+- docker-compose up -d
+
+Para apagar eles:
+- docker-compose down
+
+![medio8.png](png/88.png)
 ---
 
 ### 🔴 **Difícil**
