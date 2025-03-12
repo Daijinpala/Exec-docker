@@ -22,9 +22,9 @@ flavor:
 - docker run --name nome-container -d -p 8080:80 nome-imagem
 
 
-![a](png/148.png)
+![a](png/148)
 
-![b](png/345.png)
+![b](png/345)
 
 2. **Criando e rodando um container interativo**
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
@@ -36,7 +36,7 @@ flavor:
 - docker run -dti --name novo_nome-container nome_da_imagem
 - docker exec -ti nome_do_caontainer bash
 
-![c](png/2250.png)
+![c](png/2250)
 
 - Dentro do container atualizar a maquina (apt update && apt upgrade)
 - Baixar o nano (apt install nano)
@@ -56,7 +56,7 @@ echo "Atualização concluída!"
 - Dar permissão de execução para o .sh (chmod +x nomedo.sh)
 - Executar ele: ./nomedo.sh
 
-![d](png/3316.png)
+![d](png/3316)
 
 3. **Listando e removendo containers**
     - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
@@ -67,7 +67,7 @@ flavor:
 - docker stop nome-do-container
 - docker rm nome-do-container
 
-![e](png/634.png)
+![e](png/634)
 
 
 4. **Criando um Dockerfile para uma aplicação simples em Python**
@@ -101,12 +101,12 @@ print(nome)
 
 - Criei a imagem: **docker build . -t nome-da-imagem** (o . seria o caminho do dockerfile, porém como estou dentro da pasta isso não é necessário)
 
-![f](png/932.png)
+![f](png/932)
 
 - docker run -dti --name nome-container nome-imagem
 - docker exec -ti nome-container python3 /opt/app.py
 
-![g](png/5303.png)
+![g](png/5303)
 ---
 
 ### 🟡 **Médio**
