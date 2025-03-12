@@ -22,9 +22,9 @@ flavor:
 - docker run --name nome-container -d -p 8080:80 nome-imagem
 
 
-![a][png/Pasted image 20250310131148.png]
+![a](png/Pasted image 20250310131148.png)
 
-![b][png/Pasted image 20250310131345.png]
+![b](png/Pasted image 20250310131345.png)
 
 2. **Criando e rodando um container interativo**
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
@@ -36,7 +36,7 @@ flavor:
 - docker run -dti --name novo_nome-container nome_da_imagem
 - docker exec -ti nome_do_caontainer bash
 
-![c][png/Pasted image 20250310132250.png]
+![c](png/Pasted image 20250310132250.png)
 
 - Dentro do container atualizar a maquina (apt update && apt upgrade)
 - Baixar o nano (apt install nano)
@@ -56,7 +56,7 @@ echo "Atualização concluída!"
 - Dar permissão de execução para o .sh (chmod +x nomedo.sh)
 - Executar ele: ./nomedo.sh
 
-![d][png/Pasted image 20250310133316.png]
+![d](png/Pasted image 20250310133316.png)
 
 3. **Listando e removendo containers**
     - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
@@ -67,7 +67,7 @@ flavor:
 - docker stop nome-do-container
 - docker rm nome-do-container
 
-![e][png/Pasted image 20250310133634.png]
+![e](png/Pasted image 20250310133634.png)
 
 
 4. **Criando um Dockerfile para uma aplicação simples em Python**
@@ -101,12 +101,12 @@ print(nome)
 
 - Criei a imagem: **docker build . -t nome-da-imagem** (o . seria o caminho do dockerfile, porém como estou dentro da pasta isso não é necessário)
 
-![f][png/Pasted image 20250310144932.png]
+![f](png/Pasted image 20250310144932.png)
 
 - docker run -dti --name nome-container nome-imagem
 - docker exec -ti nome-container python3 /opt/app.py
 
-![g][png/Pasted image 20250310145303.png]
+![g](png/Pasted image 20250310145303.png)
 ---
 
 ### 🟡 **Médio**
@@ -137,7 +137,7 @@ Entrar dentro do container_1 utilizando o bash (mysql1):
 Entrar dentro do mysql:
 -  mysql -u root -p --protocol=tcp --port=3306
 
-![h][png/1.png]
+![h](png/1.png)
 
 comandos mysql utilizados:
 
@@ -156,11 +156,11 @@ INSERT INTO horta VALUES (1, 'Batata', 5);
 INSERT INTO horta VALUES (2, 'Banana', 12);
 ```
 
-![i][png/2.png]
+![i](png/2.png)
 
 Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
 
-![j][png/3.png]
+![j](png/3.png)
 
 Comandos utilizados no segundo container (mysql2)
 
@@ -170,7 +170,7 @@ show databases;
 SELECT * FROM horta WHERE qtd >= 5;
 ```
 
-![k][png/4.png]
+![k](png/4.png)
 a
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
@@ -229,11 +229,11 @@ ENTRYPOINT ./app.go
 
 Criar a imagem baseado no dockerfile:
 - docker image build -t nome-imagem .
-![l][png/5.png]
+![l](png/5.png)
 
 Iniciar o container:
 - docker run -ti --name nome-container nome-imagem
-![m][png/6.png]
+![m](png/6.png)
 
 7. **Construindo uma rede Docker para comunicação entre containers**
     - Crie uma rede Docker personalizada e faça dois containers, um **Node.js** e um **MongoDB**, se comunicarem.
@@ -252,17 +252,17 @@ Baixar as imagens node.js e mongodb:
 - docker pull node
 - docker pull mongodb/mongodb-community-server
 
-![n][png/7.png]
+![n](png/7.png)
 
 Ao criar os containers especificar a rede que irá utilizar:
 - docker run -dti --name nod --network nodmon node
 - docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
 - docker run -dti --name nome-container --network nome_da_rede nome-imagem
 
-![o][png/8.png]
+![o](png/8.png)
 
 - docker network inspect nomerede (mostra quais containers estão na rede especifica)
-![p][png/9.png]
+![p](png/9.png)
 
 Entrar no container:
 - docker exec -ti nome_do_caontainer bash
@@ -278,7 +278,7 @@ Por fim é só pingar e ver o resultado:
 container com o node.js ip: 172.18.0.2
 container com o mongodb ip:  172.18.0.3
 
-![q][png/10.png]
+![q](png/10.png)
 
 8. **Criando um compose file para rodar uma aplicação com banco de dados**
     - Utilize **Docker Compose** para configurar uma aplicação **Django** com um banco de dados **PostgreSQL**.
@@ -327,7 +327,7 @@ Agora fora do nano e dentro da pasta do nosso arquivo docker-compose
 Para apagar eles:
 - docker-compose down
 
-![r][png/88.png]
+![r](png/88.png)
 
 ---
 
@@ -420,7 +420,7 @@ footer {
 - cp site.tar ../
 - rm --Rf site
 
-![[11.png]]
+![zz](png/11.png)
 
 Dentro da pasta debian-apache:
 - criar um dockerfile
@@ -456,4 +456,4 @@ Criar a imagem:
 Executar o container e ser feliz:
 - docker run -dti -p 80:80 --name nome-container nome-imagem
 
-![s][png/final.png]
+![s](png/final.png)
