@@ -168,7 +168,6 @@ SELECT * FROM horta WHERE qtd >= 5;
 ```
 
 ![k](png/4.png)
-a
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
     - 🔹 _Exemplo de aplicação:_ Compile e rode a API do [Go Fiber Example](https://github.com/gofiber/recipes/tree/main/docker-multistage-build "https://github.com/gofiber/recipes/tree/main/docker-multistage-build") dentro do container.
@@ -305,7 +304,7 @@ services:
   django:
     image: django:onbuild
     ports:
-      - 8000:8000
+      - "8000:8000"
     networks:
       - pesca
 
