@@ -63,7 +63,7 @@ apt autoremove -y
     - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
     - 🔹 _Exemplo de aplicação:_ Use a API de exemplo [Flask Restful API Starter](https://github.com/gothinkster/flask-realworld-example-app) para criar um endpoint de teste.
 
-    **Flavor:**
+ **Flavor:**
  - Criar uma pasta para coneter nossa aplicação
  
  Dentro da pasta:
@@ -112,7 +112,7 @@ EXPOSE 5000
 
 CMD ["python", "app.py"]
 ```
-
+![mfinal.png](png/vi.png)
 
 <br>
 <div>
