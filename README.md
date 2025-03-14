@@ -1,132 +1,133 @@
 # **Exercícios Docker**
 
-> [!IMPORTANT]
-> Nunca deixar na versão `latest`, por ter aplicações que só funcionaram em uma versão específica, e como o `latest` sempre busca a última versão disponível, pode causar uma Quebra de compatibilidade (se você colocar somente o nome da distribuição sem tag, irá buscar a última versão disponível também).
-
-> [!NOTE]
-> Estudar como utilizar um usuário não root em um container.
-
 ### 🟢 **Fácil**
 
 1. **Rodando um container básico**
     - Execute um container usando a imagem do **Nginx** e acesse a página padrão no navegador.
-    - 🔹 _Exemplo de aplicação:_ Use a [landing page do TailwindCSS](https://github.com/tailwindtoolbox/Landing-Page "https://github.com/tailwindtoolbox/landing-page") como site estático dentro do container.
+    - 🔹 _Exemplo de aplicação:_ Use a [landing page do TailwindCSS](https://github.com/tailwindtoolbox/Landing-Page) como site estático dentro do container.
 
-flavor:
-- Documentação: https://hub.docker.com/_/nginx
-- docker pull nginx:1.27
-- Criar um container com a imagem e acessar a porta no navegador.
-- docker run --name nome-container -d -p 8080:80 nome-imagem
+    **Flavor:**
+    - Documentação: [Nginx Docker Hub](https://hub.docker.com/_/nginx)
+    
+    - Comandos:
+      ```bash
+      docker pull nginx
+      docker run --name nome-container -d -p 8080:80 nome-imagem
+      ```
+      
+    - Acesse `http://localhost:8080` no navegador.
 
-
-![a](png/148)
-
-![b](png/345)
+    ![facil_1.png](png/Pasted%20image%2020250310131148.png)
+    ![facil_1.1.png](png/Pasted%20image%2020250310131345.png)
 
 2. **Criando e rodando um container interativo**
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
     - 🔹 _Exemplo de aplicação:_ Teste um script Bash que imprime logs do sistema ou instala pacotes de forma interativa.
 
-flavor:
-- documentação: https://hub.docker.com/_/ubuntu
-- docker pull ubuntu:noble
-- docker run -dti --name novo_nome-container nome_da_imagem
-- docker exec -ti nome_do_caontainer bash
+    **Flavor:**
+    - Documentação: [Ubuntu Docker Hub](https://hub.docker.com/_/ubuntu)
+    - Comandos:
+      ```bash
+      docker pull ubuntu
+      docker run -dti --name meu-container nome_da_imagem
+      docker exec -ti nome_do_container bash
+      ```
+    - Dentro do container:
+      ```bash
+      apt update && apt upgrade -y
+      apt install nano -y
+      ```
 
-![c](png/2250)
+    **Script `exec.sh`:**
+    ```bash
+    #!/bin/bash
 
-- Dentro do container atualizar a maquina (apt update && apt upgrade)
-- Baixar o nano (apt install nano)
+    apt update
+    apt upgrade -y
+    apt autoremove -y
 
-nano exec.sh:
+    echo "Atualização concluída!"
+    ```
+    - Permissão de execução:
+      ```bash
+      chmod +x exec.sh
+      ./exec.sh
+      ```
 
-```
-#!/bin/bash
-
-apt update
-apt upgrade -y
-apt autoremove -y
-
-echo "Atualização concluída!"
-```
-
-- Dar permissão de execução para o .sh (chmod +x nomedo.sh)
-- Executar ele: ./nomedo.sh
-
-![d](png/3316)
+    ![facil_2.png](png/Pasted%20image%2020250310132250.png)
+    ![facil_2.1.png](png/Pasted%20image%2020250310133316.png)
 
 3. **Listando e removendo containers**
     - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
     - 🔹 _Exemplo de aplicação:_ Gerenciar containers de testes criados para verificar configurações ou dependências.
 
-flavor:
-- docker ps -a (lista os containers parados e os em execução)
-- docker stop nome-do-container
-- docker rm nome-do-container
+    **Flavor:**
+    - Comandos:
+      ```bash
+      docker ps -a
+      docker stop nome-do-container
+      docker rm nome-do-container
+      ```
 
-![e](png/634)
-
+    ![facil_3.png](png/Pasted%20image%2020250310133634.png)
 
 4. **Criando um Dockerfile para uma aplicação simples em Python**
     - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
-    - 🔹 _Exemplo de aplicação:_ Use a API de exemplo [Flask Restful API Starter](https://github.com/gothinkster/flask-realworld-example-app "https://github.com/gothinkster/flask-realworld-example-app") para criar um endpoint de teste.
+    - 🔹 _Exemplo de aplicação:_ Use a API de exemplo [Flask Restful API Starter](https://github.com/gothinkster/flask-realworld-example-app) para criar um endpoint de teste.
 
-flavor:
 - Primeiro criei uma pasta para separar os conteúdos das imagens (images)
 - Criei uma pasta que conterá o Dockerfile (ubuntu-python)
-
-arquivo do Dockerfile:
-
-```
-FROM ubuntu:noble
-
-RUN apt update && apt upgrade -y && apt install -y python3 && apt install nano -y && apt clean
-
-COPY app.py /opt/app.py
-
-CMD python3 /opt/app.py
-```
-
 - Dentro da mesma pasta criei o arquivo app.py
 
-nano app.py:
+    **Dockerfile:**
+    ```dockerfile
+    FROM ubuntu
 
-```
-nome = input("Qual é o seu nome: ")
-print(nome)
-```
+    RUN apt update && apt upgrade -y && apt install -y python3 && apt install nano -y && apt clean
 
-- Criei a imagem: **docker build . -t nome-da-imagem** (o . seria o caminho do dockerfile, porém como estou dentro da pasta isso não é necessário)
+    COPY app.py /opt/app.py
 
-![f](png/932)
+    CMD python3 /opt/app.py
+    ```
 
-- docker run -dti --name nome-container nome-imagem
-- docker exec -ti nome-container python3 /opt/app.py
+    **Script `app.py`:**
+    ```python
+    nome = input("Qual é o seu nome: ")
+    print(nome)
+    ```
 
-![g](png/5303)
+    **Comandos:**
+    ```bash
+    docker build . -t minha-imagem-python
+    docker run -dti --name meu-container-python minha-imagem-python
+    docker exec -ti meu-container-python python3 /opt/app.py
+    ```
+
+    ![facil_4.png](png/Pasted%20image%2020250310144932.png)
+    ![facil_4.1.png](png/Pasted%20image%2020250310145303.png)
+
 ---
 
 ### 🟡 **Médio**
 
 5. **Criando e utilizando volumes para persistência de dados**
     - Execute um container **MySQL** e configure um volume para armazenar os dados do banco de forma persistente.
-    - 🔹 _Exemplo de aplicação:_ Use o sistema de login e cadastro do [Laravel Breeze](https://github.com/laravel/breeze "https://github.com/laravel/breeze"), que usa MySQL.
+    - 🔹 _Exemplo de aplicação:_ Use o sistema de login e cadastro do [Laravel Breeze](https://github.com/laravel/breeze), que usa MySQL.
 
-flavor:
-Documentação mysql: https://hub.docker.com/_/mysql
 Primeiro criar um volume para guardar as informações do mysql:
-- docker volume create nome-do-volume
-- docker volume ls (vai listar os volumes)
-- docker run -e MYSQL_ROOT_PASSWORD=0311 -dti -p 3306-3306 --name nome-container --mount type=volume,src=mysql,dst=/var/lib/mysql mysql:9.2
+ - docker volume create nome-do-volume
+ - docker volume ls (vai listar os volumes)
+ - docker run -e MYSQL_ROOT_PASSWORD=0311 -dti -p 3306-3306 --name nome-container --mount type=volume,src=mysql,dst=/var/lib/mysql mysql
 
-```
-- -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
-- --name mysql1  > voce está dando um nome ao container
-- -d  > falando que vai funcionar background
-- -p 3306-3306  > está especificando a porta de entrada e saida do container
--  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
-- mysql:9.2 > passando o nome da imagem do container que será utilizada
-```
+     **Explicação `docker run`:**
+    ```
+    -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
+    - --name mysql1  > voce está dando um nome ao container
+    - -d  > falando que vai funcionar background
+    - -p 3306-3306  > está especificando a porta de entrada e saida do container
+    -  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
+    - mysql > passando o nome da imagem do container que será utilizada
+    ```
 
 Entrar dentro do container_1 utilizando o bash (mysql1):
 - docker exec -ti nome_do_caontainer bash
@@ -134,40 +135,42 @@ Entrar dentro do container_1 utilizando o bash (mysql1):
 Entrar dentro do mysql:
 -  mysql -u root -p --protocol=tcp --port=3306
 
-![h](png/1.png)
+[medio_1.png](png/1.png)
 
-comandos mysql utilizados:
 
-```
-show databases;
--- cria a database fazenda
-create database fazenda;
--- especifica a database que será utilizada
-use fazenda;
+**comandos `mysql` utilizados:**
 
--- cria a tabela horta
-CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
+    ```
+    -- mostra todas as databases
+    show databases;
+    -- cria a database fazenda
+    create database fazenda;
+    -- especifica a database que será utilizada
+    use fazenda;
+    
+    -- cria a tabela horta
+    CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
+    
+    -- preenche os valores na tabela horta
+    INSERT INTO horta VALUES (1, 'Batata', 5);
+    INSERT INTO horta VALUES (2, 'Banana', 12);
+    ```
 
--- preenche os valores na tabela horta
-INSERT INTO horta VALUES (1, 'Batata', 5);
-INSERT INTO horta VALUES (2, 'Banana', 12);
-```
-
-![i](png/2.png)
+![medio_1.2.png](png/2.png)
 
 Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
 
-![j](png/3.png)
+![medio_1.3.png](png/3.png)
 
-Comandos utilizados no segundo container (mysql2)
-
+**Comandos utilizados no segundo container (mysql2):**
 ```
 show databases;
 -- Mostra os valores dos alimentos com quantidade maior que 5
 SELECT * FROM horta WHERE qtd >= 5;
 ```
 
-![k](png/4.png)
+![medio_1.4.png](png/4.png)
+
 6. **Criando e rodando um container multi-stage**
     - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
     - 🔹 _Exemplo de aplicação:_ Compile e rode a API do [Go Fiber Example](https://github.com/gofiber/recipes/tree/main/docker-multistage-build "https://github.com/gofiber/recipes/tree/main/docker-multistage-build") dentro do container.
@@ -183,8 +186,8 @@ Entrar no docker hub e baixar a imagem do golang e uma versão minima do linux(a
 - cd go
 
 No SO:
-- docker pull golang:1.24
-- docker pull alpine:3.21
+- docker pull golang
+- docker pull alpine
 
 nano app.go
 ```
@@ -202,7 +205,7 @@ fmt.Printf("Oi, %s! Eu sou a linguagem Go", name)
 
 nano dockerfile:
 ```
-FROM golang:1.24 as exec
+FROM golang as exec
 
 COPY app.go /go/src/app/
 
@@ -212,7 +215,7 @@ WORKDIR /go/src/app/
 
 RUN go build -o app.go .
 
-FROM alpine:3.21
+FROM alpine
 
 WORKDIR /appexec
 
@@ -225,18 +228,19 @@ ENTRYPOINT ./app.go
 
 Criar a imagem baseado no dockerfile:
 - docker image build -t nome-imagem .
-![l](png/5.png)
+
+![medio_1.5.png](png/5.png)
 
 Iniciar o container:
 - docker run -ti --name nome-container nome-imagem
-![m](png/6.png)
+
+![medio_1.6.png](png/6.png)
 
 7. **Construindo uma rede Docker para comunicação entre containers**
     - Crie uma rede Docker personalizada e faça dois containers, um **Node.js** e um **MongoDB**, se comunicarem.
     - 🔹 _Exemplo de aplicação:_ Utilize o projeto [MEAN Todos](https://github.com/luanphandinh/mean-todo "https://github.com/luanphandinh/mean-todo") para criar um app de tarefas usando Node.js + MongoDB.
 
 flavor:
-
 Criar uma rede:
 - docker network create nome_da_rede
 - docker network ls  (lista as redes disponiveis)
@@ -248,17 +252,19 @@ Baixar as imagens node.js e mongodb:
 - docker pull node
 - docker pull mongodb/mongodb-community-server
 
-![n](png/7.png)
+![medio_1.7.png](png/7.png)
 
 Ao criar os containers especificar a rede que irá utilizar:
 - docker run -dti --name nod --network nodmon node
 - docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
 - docker run -dti --name nome-container --network nome_da_rede nome-imagem
 
-![o](png/8.png)
+![medio_1.8.png](png/8.png)
 
 - docker network inspect nomerede (mostra quais containers estão na rede especifica)
-![p](png/9.png)
+
+![medio_1.9.png](png/9.png)
+
 
 Entrar no container:
 - docker exec -ti nome_do_caontainer bash
@@ -274,56 +280,11 @@ Por fim é só pingar e ver o resultado:
 container com o node.js ip: 172.18.0.2
 container com o mongodb ip:  172.18.0.3
 
-![q](png/10.png)
+![medio_1.10.png](png/10.png)
 
 8. **Criando um compose file para rodar uma aplicação com banco de dados**
     - Utilize **Docker Compose** para configurar uma aplicação **Django** com um banco de dados **PostgreSQL**.
     - 🔹 _Exemplo de aplicação:_ Use o projeto [Django Polls App](https://github.com/databases-io/django-polls "https://github.com/databases-io/django-polls") para criar uma pesquisa de opinião integrada ao banco.
-
-flavor:
-- Criar um volume para guardar os dados do banco (docker volume create nome-volume)
-- Criar uma pasta para guardar futuros `compose` (compose)
-- Criar uma pasta especifica para o desafio 8 (exe8)
-- Criar um arquivo `docker-compose.yml`
-
-nano `docker-compose.yml`: 
-```
-services:
-  post:
-    image: postgres:14.17
-    environment:
-      POSTGRES_PASSWORD: "Senha123"
-      POSTGRES_DB: "fazenda"
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgresql:/var/lib/postgresql/data
-    networks:
-      - pesca
-
-  django:
-    image: django:onbuild
-    ports:
-      - "8000:8000"
-    networks:
-      - pesca
-
-networks:
-  pesca:
-    driver: bridge
-
-volumes:
-  postgresql:
-```
-
-Agora fora do nano e dentro da pasta do nosso arquivo docker-compose
-
-- docker-compose up -d
-
-Para apagar eles:
-- docker-compose down
-
-![r](png/88.png)
 
 ---
 
@@ -333,12 +294,126 @@ Para apagar eles:
     - Construa uma imagem baseada no **Nginx** ou **Apache**, adicionando um site HTML/CSS estático.
     - 🔹 _Exemplo de aplicação:_ Utilize a [landing page do Creative Tim](https://github.com/creativetimofficial/material-kit "https://github.com/creativetimofficial/material-kit") para criar uma página moderna hospedada no container.
 
+<br>
+
+- Criar uma pasta para colocar os arquivos gerais
+- Baixar uma imagem fixa do nginx 
+
+Dentro da pasta:
+
+- Criar um index.html
+- Criar um style.css
+- Criar um nginx.conf
+- Após a criação dos arquivos, criar um `dockerfile`
+
+Só executar o container e ser feliz
+
+-  docker image build -t nome-imagem .
+-  docker run -dti --name nome-container -p 8080:80 nome-imagem
+
+<br>
+
+nano `index.html`:
+```
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Site Simples</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Bem-vindo ao Meu Site Simples</h1>
+    </header>
+    <main>
+        <p>Este é um exemplo de uma página HTML/CSS simples.</p>
+    </main>
+    <footer>
+        <p>&copy; 2023 Meu Site Simples</p>
+    </footer>
+</body>
+</html>
+```
+
+<br>
+
+nano `style.css`:
+```
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+    text-align: center;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+```
+
+nano `nginx.conf`:
+
+```
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+}
+```
+
+nano `dockerfile`:
+```
+FROM nginx:alpine
+
+COPY index.html /usr/share/nginx/html/
+COPY style.css /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+![altopng1](png/ng1.png)
+<br>
+![altopng2](png/ng2.png)
+
+
+<br>
+<div>
+<details align="left">
+    <summary>Utilizando o debian: </summary>
 
 Documentação debian: https://hub.docker.com/_/debian
 Documentação apache: https://hub.docker.com/_/httpd
 
-- docker pull httpd:2.4
-- docker pull debian:12
+- docker pull httpd
+- docker pull debian
 
 No SO:
 sudo apt install wget (para colocarmos o arquivo do site em um .tar)
@@ -416,14 +491,14 @@ footer {
 - cp site.tar ../
 - rm --Rf site
 
-![zz](png/11.png)
+![medio_1.11.png](png/11.png)
 
 Dentro da pasta debian-apache:
 - criar um dockerfile
 
 dockerfile:
 ```
-FROM debian:12
+FROM debian
 
 RUN apt-get update && apt-get install -y apache2 && apt-get clean
 
@@ -452,4 +527,7 @@ Criar a imagem:
 Executar o container e ser feliz:
 - docker run -dti -p 80:80 --name nome-container nome-imagem
 
-![s](png/final.png)
+![dificil.1.png](png/final.png)
+
+</details>
+</div>
