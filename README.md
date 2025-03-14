@@ -17,8 +17,8 @@
       
     - Acesse `http://localhost:8080` no navegador.
 
-    ![facil_1.png](png/1148)
-    ![facil_1.1.png](png/345.png)
+    ![facil_1.png](png/148)
+    ![facil_1.1.png](png/345)
 
 2. **Criando e rodando um container interativo**
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
