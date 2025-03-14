@@ -17,8 +17,8 @@
       
     - Acesse `http://localhost:8080` no navegador.
 
-    ![facil_1.png](png/Pasted%20image%2020250310131148.png)
-    ![facil_1.1.png](png/Pasted%20image%2020250310131345.png)
+    ![facil_1.png](png/1148)
+    ![facil_1.1.png](png/345.png)
 
 2. **Criando e rodando um container interativo**
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
@@ -54,8 +54,8 @@
       ./exec.sh
       ```
 
-    ![facil_2.png](png/Pasted%20image%2020250310132250.png)
-    ![facil_2.1.png](png/Pasted%20image%2020250310133316.png)
+    ![facil_2.png](png/2250)
+    ![facil_2.1.png](png/3316)
 
 3. **Listando e removendo containers**
     - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
@@ -69,7 +69,7 @@
       docker rm nome-do-container
       ```
 
-    ![facil_3.png](png/Pasted%20image%2020250310133634.png)
+    ![facil_3.png](png/634)
 
 4. **Criando um Dockerfile para uma aplicação simples em Python**
     - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
@@ -103,8 +103,8 @@
     docker exec -ti meu-container-python python3 /opt/app.py
     ```
 
-    ![facil_4.png](png/Pasted%20image%2020250310144932.png)
-    ![facil_4.1.png](png/Pasted%20image%2020250310145303.png)
+    ![facil_4.png](png/932)
+    ![facil_4.1.png](png/5303)
 
 ---
 
@@ -136,7 +136,6 @@ Entrar dentro do mysql:
 -  mysql -u root -p --protocol=tcp --port=3306
 
 [medio_1.png](png/1.png)
-
 
 **comandos `mysql` utilizados:**
 
