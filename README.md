@@ -2,6 +2,12 @@
 
 [Com a utilização dos exemplos](https://github.com/Daijinpala/Exem-docker)
 
+> [!IMPORTANT]
+> Nunca deixar na versão `latest`, por ter aplicações que só funcionaram em uma versão específica, e como o `latest` sempre busca a última versão disponível, pode causar uma Quebra de compatibilidade (se você colocar somente o nome da distribuição sem tag, irá buscar a última versão disponível também).
+
+> [!NOTE]
+> Estudar como utilizar um usuário não root em um container.
+
 ### 🟢 **Fácil**
 
 1. **Rodando um container básico**
