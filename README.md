@@ -1,4 +1,6 @@
-# **Exercícios Docker**
+# **Exercícios Docker (Sem a aplicação dos Exemplos)**
+
+[Com a utilização dos exemplos](https://github.com/Daijinpala/Exem-docker)
 
 ### 🟢 **Fácil**
 
