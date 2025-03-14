@@ -6,16 +6,11 @@
     - Execute um container usando a imagem do **Nginx** e acesse a página padrão no navegador.
     - 🔹 _Exemplo de aplicação:_ Use a [landing page do TailwindCSS](https://github.com/tailwindtoolbox/Landing-Page) como site estático dentro do container.
 
-    **Flavor:**
-    - Documentação: [Nginx Docker Hub](https://hub.docker.com/_/nginx)
-    
-    - Comandos:
-      ```bash
-      docker pull nginx
-      docker run --name nome-container -d -p 8080:80 nome-imagem
-      ```
-      
-    - Acesse `http://localhost:8080` no navegador.
+**Flavor**:
+- Documentação: https://hub.docker.com/_/nginx
+- docker pull nginx:1.27
+- Criar um container com a imagem e acessar a porta no navegador.
+- docker run --name nome-container -d -p 8080:80 nome-imagem
 
     ![facil_1.png](png/148)
     ![facil_1.1.png](png/345)
@@ -24,52 +19,45 @@
     - Inicie um container **Ubuntu** e interaja com o terminal dele.
     - 🔹 _Exemplo de aplicação:_ Teste um script Bash que imprime logs do sistema ou instala pacotes de forma interativa.
 
-    **Flavor:**
-    - Documentação: [Ubuntu Docker Hub](https://hub.docker.com/_/ubuntu)
-    - Comandos:
-      ```bash
-      docker pull ubuntu
-      docker run -dti --name meu-container nome_da_imagem
-      docker exec -ti nome_do_container bash
-      ```
-    - Dentro do container:
-      ```bash
-      apt update && apt upgrade -y
-      apt install nano -y
-      ```
-
-    **Script `exec.sh`:**
-    ```bash
-    #!/bin/bash
-
-    apt update
-    apt upgrade -y
-    apt autoremove -y
-
-    echo "Atualização concluída!"
-    ```
-    - Permissão de execução:
-      ```bash
-      chmod +x exec.sh
-      ./exec.sh
-      ```
+**Flavor:**
+- documentação: https://hub.docker.com/_/ubuntu
+- docker pull ubuntu:noble
+- docker run -dti --name novo_nome-container nome_da_imagem
+- docker exec -ti nome_do_caontainer bash
 
     ![facil_2.png](png/2250)
+
+Dentro do container:
+- Atualizar a maquina (apt update && apt upgrade)
+- Baixar o nano (apt install nano)
+
+nano exec.sh:
+
+```
+#!/bin/bash
+
+apt update
+apt upgrade -y
+apt autoremove -y
+```
+
+- Dar permissão de execução para o .sh (chmod +x nomedo.sh)
+- Executar ele: ./nomedo.sh
+
+
     ![facil_2.1.png](png/3316)
 
 3. **Listando e removendo containers**
     - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
     - 🔹 _Exemplo de aplicação:_ Gerenciar containers de testes criados para verificar configurações ou dependências.
 
-    **Flavor:**
-    - Comandos:
-      ```bash
-      docker ps -a
-      docker stop nome-do-container
-      docker rm nome-do-container
-      ```
+**Flavor**:
 
-    ![facil_3.png](png/634)
+- docker ps -a (lista os containers parados e os em execução)
+- docker stop nome-do-container
+- docker rm nome-do-container
+    
+![facil_3.png](png/634)
 
 4. **Criando um Dockerfile para uma aplicação simples em Python**
     - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
@@ -125,7 +113,6 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
- ![fac4png](png/vi.png)
 
 <br>
 <div>
