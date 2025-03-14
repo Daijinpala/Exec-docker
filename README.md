@@ -75,6 +75,61 @@
     - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
     - 🔹 _Exemplo de aplicação:_ Use a API de exemplo [Flask Restful API Starter](https://github.com/gothinkster/flask-realworld-example-app) para criar um endpoint de teste.
 
+    **Flavor:**
+ - Criar uma pasta para coneter nossa aplicação
+ 
+ Dentro da pasta:
+ 
+ - Criar um arquivo app.py
+ - Criar um arquivo requirements.txt
+ - Criar um Dockerfile
+
+Após a criação dos arquivos:
+
+- docker build . -t nome-imagem
+- docker run -dti --name nome-container -p 5000:5000 nome-imagem
+
+nano `app.py`:
+```
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def padaria():
+    return 'Não temos pão duro'
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+nano `requirements.txt`
+```
+Flask==2.3.2
+```
+
+nano `dockerfile`
+```
+FROM python:3.13
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+
+
+<br>
+<div>
+<details align="left">
+    <summary>Executando o phyton sem o flask: </summary>
 - Primeiro criei uma pasta para separar os conteúdos das imagens (images)
 - Criei uma pasta que conterá o Dockerfile (ubuntu-python)
 - Dentro da mesma pasta criei o arquivo app.py
@@ -105,8 +160,11 @@
 
     ![facil_4.png](png/932)
     ![facil_4.1.png](png/5303)
+</details>
+</div>
+<br>
 
----
+<hr>
 
 ### 🟡 **Médio**
 
