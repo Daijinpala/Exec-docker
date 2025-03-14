@@ -398,9 +398,9 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-![altopng1](png/ng1.png)
+![altopng1](png/n1.png)
 <br>
-![altopng2](png/ng2.png)
+![altopng2](png/n2.png)
 
 
 <br>
