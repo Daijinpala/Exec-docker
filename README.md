@@ -118,6 +118,7 @@ CMD ["python", "app.py"]
 <div>
 <details align="left">
     <summary>Executando o phyton sem o flask: </summary>
+    
 - Primeiro criei uma pasta para separar os conteúdos das imagens (images)
 - Criei uma pasta que conterá o Dockerfile (ubuntu-python)
 - Dentro da mesma pasta criei o arquivo app.py
@@ -147,7 +148,9 @@ CMD ["python", "app.py"]
     ```
 
     ![facil_4.png](png/932)
+  
     ![facil_4.1.png](png/5303)
+  
 </details>
 </div>
 <br>
