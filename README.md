@@ -135,7 +135,7 @@ Entrar dentro do container_1 utilizando o bash (mysql1):
 Entrar dentro do mysql:
 -  mysql -u root -p --protocol=tcp --port=3306
 
-[medio_1.png](png/1.png)
+![medio_1.png](png/1.png)
 
 **comandos `mysql` utilizados:**
 
