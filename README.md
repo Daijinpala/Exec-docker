@@ -125,6 +125,7 @@ EXPOSE 5000
 CMD ["python", "app.py"]
 ```
 
+ ![fac4png](png/vi.png)
 
 <br>
 <div>
