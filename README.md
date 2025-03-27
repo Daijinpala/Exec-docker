@@ -1,634 +1,480 @@
-# **Exercícios Docker (Sem a aplicação dos Exemplos)**
+# Projeto:
+```
+1. Instalação e configuração do DOCKER ou CONTAINERD no host EC2; SEGUIR DESENHO TOPOLOGIA DISPOSTA. `Ponto adicional para o trabalho utilizar a instalação via script deStart Instance (user_data.sh)`
 
-[Com a utilização dos exemplos](https://github.com/Daijinpala/Exem-docker)
+2. Efetuar Deploy de uma aplicação Wordpress com: container de aplicação RDS database Mysql. 
 
-> [!IMPORTANT]
-> Nunca deixar na versão `latest`, por ter aplicações que só funcionaram em uma versão específica, e como o `latest` sempre busca a última versão disponível, pode causar uma Quebra de compatibilidade (se você colocar somente o nome da distribuição sem tag, irá buscar a última versão disponível também).
+3. Configuração da utilização do serviço EFS AWS para estáticos do container de aplicação Wordpress .
 
-> [!NOTE]
-> Estudar como utilizar um usuário não root em um container.
+4. Configuração do serviço de Load Balancer AWS para a aplicação Wordpress.
 
-### 🟢 **Fácil**
+```
+<hr>
 
-1. **Rodando um container básico**
-    - Execute um container usando a imagem do **Nginx** e acesse a página padrão no navegador.
-    - 🔹 _Exemplo de aplicação:_ Use a [landing page do TailwindCSS](https://github.com/tailwindtoolbox/Landing-Page) como site estático dentro do container.
+## Estágios do Projeto de forma resumida:
 
-**Flavor**:
-- Documentação: https://hub.docker.com/_/nginx
-- docker pull nginx:1.27
-- Criar um container com a imagem e acessar a porta no navegador.
-- docker run --name nome-container -d -p 8080:80 nome-imagem
+1. Rodar o wordpress local ✅
+2. Criar a VPC, EC2 ✅
+3. Criou o RDS ✅
+4. Instalou o Docker na EC2 ✅
+5. Rodou o Wordpress na EC2 ✅
+6. Criou um script de inicialização no User Data e o testou ✅
+7. Criou o auto-scaling group e balanceador de Carga ✅
+8. Criou regras de scaling ✅
+9. Monitoramento no Cloudwatch ✅
 
-    ![facil_1.png](png/148)
-    ![facil_1.1.png](png/345)
+![1](png/print.png)
 
-2. **Criando e rodando um container interativo**
-    - Inicie um container **Ubuntu** e interaja com o terminal dele.
-    - 🔹 _Exemplo de aplicação:_ Teste um script Bash que imprime logs do sistema ou instala pacotes de forma interativa.
+### Pontos de atenção:
 
-**Flavor:**
-- documentação: https://hub.docker.com/_/ubuntu
-- docker pull ubuntu:noble
-- docker run -dti --name novo_nome-container nome_da_imagem
-- docker exec -ti nome_do_caontainer bash
+- Não utilizar ip público para saída do serviços WP (Evitem publicar o serviço WP via IP Público) 
+- Sugestão para o tráfego de internet sair pelo LB (Load Balancer Classic)
+- Pastas públicas e estáticos do wordpress sugestão de utilizar o EFS (Elastic File Sistem)
+- Fica a critério de cada integrante usar Dockerfile ou Dockercompose;
+- Necessário demonstrar a aplicação wordpress funcionando (tela de login) 
+- Aplicação Wordpress precisa estar rodando na porta 80 ou 8080;
+- Utilizar repositório git para versionamento; 
+- Criar documentação.
 
-    ![facil_2.png](png/2250)
+## Conclusão:
 
-Dentro do container:
-- Atualizar a maquina (apt update && apt upgrade)
-- Baixar o nano (apt install nano)
+### Primeira etapa `local`: Criação do ambiente de testes.
 
-nano exec.sh:
+<div>
+<details align="left">
+    <summary></summary>
+1 - Baixe o wsl (Pela loja da Microsoft || Por linha de comando).
 
+```
+wsl --install
+```
+
+
+2 - Instale a versão mais atual do ubuntu (Pela loja da Microsoft || Por linha de comando).
+
+```
+wsl --install -d Ubuntu-24.04
+```
+
+3 - Instale o um editor de código de sua preferência (VScode).
+
+```
+https://code.visualstudio.com/download
+```
+
+4 - Faça um conexão ao wsl.
+
+![2](png/base.png)
+
+```
+Assim que você entrar no vscode já com o wsl instalado ele vai te recomendar que baixe uma extensão chamada wsl, após a instalação você podera clicar no simbolo >< no canto inferior esquerdo e após isso é só apertar em "Connect to WSL" e estará dentro da maquina !! 
+```
+
+5 - Atualize a maquina.
+
+```
+sudo apt update && sudo apt upgrade -y
+```
+
+6 - Instale o docker && docker compose.
+
+```
+1- sudo apt install -y ca-certificates curl gnupg
+
+2- sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+3- echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+4- sudo apt update
+
+5- sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+6- sudo usermod -aG docker $USER
+
+7- sudo systemctl enable docker
+sudo systemctl start docker
+
+----------------------------------------------------------------------------------------
+
+1- Instale as dependências necessárias.
+2- Adicione a chave GPG oficial do Docker.
+3- Adicione o repositório do Docker ao APT.
+4- Atualize novamente.
+5- Instale o Docker && o docker compose.
+6- Adicione seu usuário ao grupo `docker` (Opcional).
+7- Habilite o Docker para iniciar com o sistema (Opcional).
+```
+</div>
+
+### Segunda etapa `local`: Teste de implementação do *Wordpress*.
+
+<div>
+<details align="left">
+    <summary></summary>
+1-  Criar uma abstração dos volumes e redes (Opcional).
+
+```
+----------------------------------------------------------------------------------------
+
+|- NETWORK
+|-- NAME 'tunel'
+
+----------------------------------------------------------------------------------------
+
+|- VOLUMES
+|-- NAME wordp
+|-- NAME dbm
+
+----------------------------------------------------------------------------------------
+
+Projeto: foi definido que o nome da rede será 'tunel' e que será criado dois volumes, um para armazenar os arquivos do site(wordp) e o outro, arquivos referentes ao banco de dados(dbm).
+```
+
+2- Criar volumes para arquivos do site e do banco de dados.
+
+```
+1- docker volume create wordp
+
+2- docker volume create dbm
+
+3- docker volume ls
+
+----------------------------------------------------------------------------------------
+
+1- Cria um volume para o Wordpress.
+2- Cria um volume para o Banco de dados mysql.
+3- Listas os volumes.
+```
+
+
+3- Criar uma rede para permitir uma conexão entre o banco e o site.
+
+```
+1- docker network create tunel
+
+2- docker network ls
+
+----------------------------------------------------------------------------------------
+
+1- Cria uma rede com o nome 'tunel'.
+2- Lista as redes.
+```
+
+4- Criar pastas para armazenar arquivos referentes ao projeto.
+
+```
+1- mkdir projetinho
+2- cd projetinho
+
+----------------------------------------------------------------------------------------
+
+1- Cria uma diretório com o nome 'projetinho'
+2- Entra no diretório especificado (Por mais leigo que seja, fazer uma estrutura para um projeto é essencial).
+```
+
+5- Checar a documentação  do docker-hub
+
+```
+https://hub.docker.com/_/wordpress
+```
+
+6- Criar uma abstração do banco de dados (Opcional).
+
+```
+|- DB NAME 'projetinho'
+|-- DB USER 'cariani'
+|-- DB PASSWORD '0311'
+```
+
+7- Criar um compose seguindo a documentação acima.
+
+nano `docker-compose.yml`: 
+```
+services:
+  web:
+    image: wordpress
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: cariani
+      WORDPRESS_DB_PASSWORD: 0311
+      WORDPRESS_DB_NAME: projetinho
+    volumes:
+      - wordp:/var/www/html
+    networks:
+      - tunel
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: projetinho
+      MYSQL_USER: cariani
+      MYSQL_PASSWORD: 0311
+      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - dbm:/var/lib/mysql
+    networks:
+      - tunel
+
+networks:
+  tunel:
+    driver: bridge
+
+volumes:
+  wordp:
+  dbm:
+
+```
+
+8- Executar o compose, e após o teste apagar ele.
+
+```
+1- docker compose up -d
+
+2- docker compose down
+
+----------------------------------------------------------------------------------------
+ 
+1- Executa o arquivo 'docker-compose.yml'
+2- Exclui os containers gerados(Caso não tenha criado os volumes e a rede antes de executar, o mesmo irá criar as redes serão excluidas más os volumes permanecerão)
+```
+
+9- Resultado.
+
+![3](png/Result.png)
+
+<br>
+
+![4](png/posinst.png)
+</div>
+
+### Primeira etapa `AWS`: Criação da topologia da rede e seus grupos de segurança com teste sem ALB && ASG.
+
+<div>
+<details align="left">
+    <summary></summary>
+1- Criar a VPC
+
+![5](png/vcp.png)
+
+2- Criar os grupos de segurança.
+
+![6](png/gpsg.png)
+
+3- Criar o banco de dados(RDS).
+
+```
+Especificações: 
+
+- RDS com MySQL, sem Multi-AZ e instâncias db.t3.micro
+
+----------------------------------------------------------------------------------------
+
+|- NAME DB 'db-wordpress'
+|-- NAME USER 'flavor'
+|-- PASSWORD '998049352'
+|--- DATABASE NAME 'db_projetinho'
+
+```
+![7](png/rds_mysql.png)
+
+![8](png/rds_gratuito.png)
+
+![9](png/rds_config.png)
+
+
+```
+Após a criação do banco de dados, RDS > escolha o seu banco > security > altere a regra de entrada pro grupo de segurança que vai estar sua ec2.
+```
+
+4- Criar uma EC2.
+
+![10](png/ec2_image.png)
+
+![11](png/ec2_network.png)
+
+![12](png/ec2_userdata.png)
+
+
+Documento utilizado no`userdata`:
 ```
 #!/bin/bash
+set -e  # Encerra o script em caso de erro
 
-apt update
-apt upgrade -y
-apt autoremove -y
+# Atualiza o sistema
+sudo apt update -y
+sudo apt upgrade -y
+
+# Instala as dependências
+sudo apt install -y ca-certificates curl gnupg wget
+
+# Configura o repositório do Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Instala docker e o docker compose
+sudo apt update -y
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Instala o mysql-client para fazer o teste de conexão
+sudo apt install -y mysql-client
+
+# Adiciona usuário ao grupo Docker e aplica as permissões
+sudo usermod -aG docker $USER
+
+# Atualiza grupos sem precisar de novo login
+newgrp docker
+
+# Habilita e inicia o Docker
+sudo systemctl enable docker
+sudo systemctl start docker
+
+
 ```
 
-- Dar permissão de execução para o .sh (chmod +x nomedo.sh)
-- Executar ele: ./nomedo.sh
+5- Entar na EC2 via ssh.
 
+6- Baixar o *mysql-client* para testar a conectividade com o banco de dados
 
-    ![facil_2.1.png](png/3316)
-
-3. **Listando e removendo containers**
-    - Liste todos os containers em execução e parados, pare um container em execução e remova um container específico.
-    - 🔹 _Exemplo de aplicação:_ Gerenciar containers de testes criados para verificar configurações ou dependências.
-
-**Flavor**:
-
-- docker ps -a (lista os containers parados e os em execução)
-- docker stop nome-do-container
-- docker rm nome-do-container
-    
-![facil_3.png](png/634)
-
-4. **Criando um Dockerfile para uma aplicação simples em Python**
-    - Crie um `Dockerfile` para uma aplicação **Flask** que retorna uma mensagem ao acessar um endpoint.
-    - 🔹 _Exemplo de aplicação:_ Use a API de exemplo [Flask Restful API Starter](https://github.com/gothinkster/flask-realworld-example-app) para criar um endpoint de teste.
-
- **Flavor:**
- - Criar uma pasta para coneter nossa aplicação
- 
- Dentro da pasta:
- 
- - Criar um arquivo app.py
- - Criar um arquivo requirements.txt
- - Criar um Dockerfile
-
-Após a criação dos arquivos:
-
-- docker build . -t nome-imagem
-- docker run -dti --name nome-container -p 5000:5000 nome-imagem
-
-nano `app.py`:
 ```
-from flask import Flask
+sudo apt install -y mysql-client
 
-app = Flask(__name__)
+----------------------------------------------------------------------------------------
 
-@app.route('/')
-def padaria():
-    return 'Não temos pão duro'
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+mysql -h [ENDEREÇO_DO_BANCO] -u [USUÁRIO] -p -e "SHOW DATABASES;"
 ```
 
-nano `requirements.txt`
+nano `docker-compose.yml`: 
 ```
-Flask==2.3.2
+services:
+  web:
+    image: wordpress
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      WORDPRESS_DB_HOST: db-wordpress.c98i000mqf2o.us-east-1.rds.amazonaws.com
+      WORDPRESS_DB_USER: flavor
+      WORDPRESS_DB_PASSWORD: 998049352
+      WORDPRESS_DB_NAME: db_projetinho
+    networks:
+      - tunel
+
+networks:
+  tunel:
+    driver: bridge
 ```
 
-nano `dockerfile`
-```
-FROM python:3.13
+![13](png/rds_fim.png)
 
-WORKDIR /app
-
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 5000
-
-CMD ["python", "app.py"]
-```
-![mfinal.png](png/vi.png)
-
-<br>
-<div>
-<details align="left">
-    <summary>Executando o phyton sem o flask: </summary>
-    
-- Primeiro criei uma pasta para separar os conteúdos das imagens (images)
-- Criei uma pasta que conterá o Dockerfile (ubuntu-python)
-- Dentro da mesma pasta criei o arquivo app.py
-
-    **Dockerfile:**
-    ```dockerfile
-    FROM ubuntu
-
-    RUN apt update && apt upgrade -y && apt install -y python3 && apt install nano -y && apt clean
-
-    COPY app.py /opt/app.py
-
-    CMD python3 /opt/app.py
-    ```
-
-    **Script `app.py`:**
-    ```python
-    nome = input("Qual é o seu nome: ")
-    print(nome)
-    ```
-
-    **Comandos:**
-    ```bash
-    docker build . -t minha-imagem-python
-    docker run -dti --name meu-container-python minha-imagem-python
-    docker exec -ti meu-container-python python3 /opt/app.py
-    ```
-
-    ![facil_4.png](png/932)
-  
-    ![facil_4.1.png](png/5303)
-  
-</details>
 </div>
-<br>
 
-<hr>
+### Segunda etapa `AWS`: Aplicação do auto-scaling group com balanceador de carga, regras de scaling e CloudWatch.
 
-### 🟡 **Médio**
-
-5. **Criando e utilizando volumes para persistência de dados**
-    - Execute um container **MySQL** e configure um volume para armazenar os dados do banco de forma persistente.
-    - 🔹 _Exemplo de aplicação:_ Use o sistema de login e cadastro do [Laravel Breeze](https://github.com/laravel/breeze), que usa MySQL.
-
-Primeiro criar um volume para guardar as informações do mysql:
- - docker volume create nome-do-volume
- - docker volume ls (vai listar os volumes)
- - docker run -e MYSQL_ROOT_PASSWORD=0311 -dti -p 3306-3306 --name nome-container --mount type=volume,src=mysql,dst=/var/lib/mysql mysql
-
-     **Explicação `docker run`:**
-    ```
-    -e MYSQL_ROOT_PASSWORD=0311 > você ta indicando a senha
-    - --name mysql1  > voce está dando um nome ao container
-    - -d  > falando que vai funcionar background
-    - -p 3306-3306  > está especificando a porta de entrada e saida do container
-    -  type=volume,src=mysql,dst=/var/lib/mysql mysql > está passando o volume do so e logo após a pasta que está os arquivos do mysql.
-    - mysql > passando o nome da imagem do container que será utilizada
-    ```
-
-Entrar dentro do container_1 utilizando o bash (mysql1):
-- docker exec -ti nome_do_caontainer bash
-
-Entrar dentro do mysql:
--  mysql -u root -p --protocol=tcp --port=3306
-
-![medio_1.png](png/1.png)
-
-**comandos `mysql` utilizados:**
-
-    ```
-    -- mostra todas as databases
-    show databases;
-    -- cria a database fazenda
-    create database fazenda;
-    -- especifica a database que será utilizada
-    use fazenda;
-    
-    -- cria a tabela horta
-    CREATE TABLE horta (id INTEGER PRIMARY KEY,name TEXT NOT NULL,qtd INTEGER NOT NULL);
-    
-    -- preenche os valores na tabela horta
-    INSERT INTO horta VALUES (1, 'Batata', 5);
-    INSERT INTO horta VALUES (2, 'Banana', 12);
-    ```
-
-![medio_1.2.png](png/2.png)
-
-Agora dentro de uma segunda vm com o mysql (vulgo mysql2)
-
-![medio_1.3.png](png/3.png)
-
-**Comandos utilizados no segundo container (mysql2):**
-```
-show databases;
--- Mostra os valores dos alimentos com quantidade maior que 5
-SELECT * FROM horta WHERE qtd >= 5;
-```
-
-![medio_1.4.png](png/4.png)
-
-6. **Criando e rodando um container multi-stage**
-    - Utilize um **multi-stage build** para otimizar uma aplicação **Go**, reduzindo o tamanho da imagem final.
-    - 🔹 _Exemplo de aplicação:_ Compile e rode a API do [Go Fiber Example](https://github.com/gofiber/recipes/tree/main/docker-multistage-build "https://github.com/gofiber/recipes/tree/main/docker-multistage-build") dentro do container.
-
-flavor:
-Entrar no docker hub e baixar a imagem do golang e uma versão minima do linux(alpine)
-- Documentação golang: https://hub.docker.com/_/golang
-- Documentação alpine: https://hub.docker.com/_/alpine
-
- Criar uma pasta para um container multi-stage utilizando go & alpine
-- cd images 
-- mkdir go
-- cd go
-
-No SO:
-- docker pull golang
-- docker pull alpine
-
-nano app.go
-```
-package main
-import(
-  "fmt"
-)
-func main(){
-fmt.Println("Qual é o seun nome: ?")
-var name string
-fmt.Scanln(&name)
-fmt.Printf("Oi, %s! Eu sou a linguagem Go", name)
-}
-```
-
-nano dockerfile:
-```
-FROM golang as exec
-
-COPY app.go /go/src/app/
-
-ENV GO111MODULE=auto
-
-WORKDIR /go/src/app/
-
-RUN go build -o app.go .
-
-FROM alpine
-
-WORKDIR /appexec
-
-COPY --from=exec /go/src/app /appexec
-
-RUN chmod -R 755 /appexec
-
-ENTRYPOINT ./app.go
-```
-
-Criar a imagem baseado no dockerfile:
-- docker image build -t nome-imagem .
-
-![medio_1.5.png](png/5.png)
-
-Iniciar o container:
-- docker run -ti --name nome-container nome-imagem
-
-![medio_1.6.png](png/6.png)
-
-7. **Construindo uma rede Docker para comunicação entre containers**
-    - Crie uma rede Docker personalizada e faça dois containers, um **Node.js** e um **MongoDB**, se comunicarem.
-    - 🔹 _Exemplo de aplicação:_ Utilize o projeto [MEAN Todos](https://github.com/luanphandinh/mean-todo "https://github.com/luanphandinh/mean-todo") para criar um app de tarefas usando Node.js + MongoDB.
-
-flavor:
-Criar uma rede:
-- docker network create nome_da_rede
-- docker network ls  (lista as redes disponiveis)
-
-Baixar as imagens node.js e mongodb:
-- Documentação: https://hub.docker.com/_/node
-- Documentação: https://hub.docker.com/r/mongodb/mongodb-community-server
-
-- docker pull node
-- docker pull mongodb/mongodb-community-server
-
-![medio_1.7.png](png/7.png)
-
-Ao criar os containers especificar a rede que irá utilizar:
-- docker run -dti --name nod --network nodmon node
-- docker run --name mon -d -p 27017:27017 --network nodmon mongodb/mongodb-community-server:$MONGODB_VERSION
-- docker run -dti --name nome-container --network nome_da_rede nome-imagem
-
-![medio_1.8.png](png/8.png)
-
-- docker network inspect nomerede (mostra quais containers estão na rede especifica)
-
-![medio_1.9.png](png/9.png)
-
-
-Entrar no container:
-- docker exec -ti nome_do_caontainer bash
-
-Dentro dos dois containers:
-```
-apt update
-apt get-install -y iputils-ping
-```
-
-Por fim é só pingar e ver o resultado:
-
-container com o node.js ip: 172.18.0.2
-container com o mongodb ip:  172.18.0.3
-
-![medio_1.10.png](png/10.png)
-
-8. **Criando um compose file para rodar uma aplicação com banco de dados**
-    - Utilize **Docker Compose** para configurar uma aplicação **Django** com um banco de dados **PostgreSQL**.
-    - 🔹 _Exemplo de aplicação:_ Use o projeto [Django Polls App](https://github.com/databases-io/django-polls "https://github.com/databases-io/django-polls") para criar uma pesquisa de opinião integrada ao banco.
-
-flavor:
- - Criar um volume para guardar os dados do banco (docker volume create nome-volume)
- - Criar uma pasta para guardar futuros `compose` (compose)
- - Criar uma pasta especifica para o desafio 8 (exe8)
- - Criar um arquivo `docker-compose.yml`
- 
- nano `docker-compose.yml`: 
- ```
- services:
-   post:
-     image: postgres:14.17
-     environment:
-       POSTGRES_PASSWORD: "Senha123"
-       POSTGRES_DB: "fazenda"
-     ports:
-       - "5432:5432"
-     volumes:
-       - postgresql:/var/lib/postgresql/data
-     networks:
-       - pesca
- 
-   django:
-     image: django:onbuild
-     ports:
-       - 8000:8000
-     networks:
-       - pesca
- 
- networks:
-   pesca:
-     driver: bridge
- 
- volumes:
-   postgresql:
- ```
- 
- Agora fora do nano e dentro da pasta do nosso arquivo docker-compose
- 
- - docker-compose up -d
- 
- Para apagar eles:
- - docker-compose down
- 
- ![r](png/88.png)
- 
-<hr>
-
-### 🔴 **Difícil**
-
-9. **Criando uma imagem personalizada com um servidor web e arquivos estáticos**
-    - Construa uma imagem baseada no **Nginx** ou **Apache**, adicionando um site HTML/CSS estático.
-    - 🔹 _Exemplo de aplicação:_ Utilize a [landing page do Creative Tim](https://github.com/creativetimofficial/material-kit "https://github.com/creativetimofficial/material-kit") para criar uma página moderna hospedada no container.
-
-<br>
-
-- Criar uma pasta para colocar os arquivos gerais
-- Baixar uma imagem fixa do nginx 
-
-Dentro da pasta:
-
-- Criar um index.html
-- Criar um style.css
-- Criar um nginx.conf
-- Após a criação dos arquivos, criar um `dockerfile`
-
-Só executar o container e ser feliz
-
--  docker image build -t nome-imagem .
--  docker run -dti --name nome-container -p 8080:80 nome-imagem
-
-<br>
-
-nano `index.html`:
-```
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site Simples</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Bem-vindo ao Meu Site Simples</h1>
-    </header>
-    <main>
-        <p>Este é um exemplo de uma página HTML/CSS simples.</p>
-    </main>
-    <footer>
-        <p>&copy; 2023 Meu Site Simples</p>
-    </footer>
-</body>
-</html>
-```
-
-<br>
-
-nano `style.css`:
-```
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
-
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
-
-main {
-    padding: 20px;
-    text-align: center;
-}
-
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-```
-
-nano `nginx.conf`:
-
-```
-server {
-    listen 80;
-    server_name localhost;
-
-    location / {
-        root /usr/share/nginx/html;
-        index index.html;
-    }
-}
-```
-
-nano `dockerfile`:
-```
-FROM nginx:alpine
-
-COPY index.html /usr/share/nginx/html/
-COPY style.css /usr/share/nginx/html/
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-![altopng1](png/n1.png)
-<br>
-![altopng2](png/n2.png)
-
-
-<br>
 <div>
 <details align="left">
-    <summary>Utilizando o debian: </summary>
+    <summary></summary>
+1- Criar uma `VPC` (apagar todas as outras existentes para maior facilidade).
 
-Documentação debian: https://hub.docker.com/_/debian
-Documentação apache: https://hub.docker.com/_/httpd
+![14](png/vpc.png)
 
-- docker pull httpd
-- docker pull debian
+**IMPORTANTE**: Acessar a subnetes publicas e colocar para elas o ipv4 publico automaticamente.
 
-No SO:
-sudo apt install wget (para colocarmos o arquivo do site em um .tar)
+2- Criar um grupo de segurança para os servidores web.
 
-Criar uma pasta que contenha a criação da imagem:
-- cd /images
-- mkdir debian-apache
-- cd /debian-apache
-- mkdir site
-- cd site
+`sg_webservers:`
+![15](png/sgweb-entrada.png)
+![16](png/sgweb-saida.png)
 
-Dentro da pasta site:
-- Criar um index.html básico
-- Criar um style.css básico
+3- Criar o grupo de segurança RDS.
 
-Index.html:
+`sg_mysql:`
+![f1](png/rds-entrada.png)
+![f2](png/rds-saida.png)
+
+
+4- Criar o banco de dados(RDS).
+
 ```
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site Simples</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Bem-vindo ao Meu Site Simples</h1>
-    </header>
-    <main>
-        <p>Este é um exemplo de uma página HTML/CSS simples.</p>
-    </main>
-    <footer>
-        <p>&copy; 2023 Meu Site Simples</p>
-    </footer>
-</body>
-</html>
+Cria do mesmo jeito do teste anterior, só que agora você faz um novo grupo de segurança durante a criação do banco de dados, do qual a regra de entrada é apontando para o grupo de segurança do wordpress (importante salientar que se criar deste jeito, quando apagar o banco de dados até o grupo de segurança vai embora)
 ```
 
-Style.css:
-```
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-}
+5- Cria um target group para o `ALB`.
 
-header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
+![17](png/tg-alb.png)
 
-main {
-    padding: 20px;
-    text-align: center;
-}
+6- Criar um grupo de segurança para o `ALB`.
 
-footer {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-}
-```
+`sg_alb`:
+![18](png/sgalb-entrada.png)
+![19](png/sgalb-saida.png)
 
+7- Criar um `Launch template`.
 
-- tar -czf site.tar ./
-- cp site.tar ../
-- rm --Rf site
+![20](png/lt_1.png)
+![21](png/lt_2.png)
+![22](png/lt_3.png)
 
-![medio_1.11.png](png/11.png)
+8- Faça um `ASG` com o `ALB`
 
-Dentro da pasta debian-apache:
-- criar um dockerfile
+![23](png/asg-1.png)
 
-dockerfile:
-```
-FROM debian
+<hr>
 
-RUN apt-get update && apt-get install -y apache2 && apt-get clean
+![24](png/asg-2.png)
 
-ENV APACHE_LOCK_DIR="var/lock"
-ENV APACHE_PID_FILE="var/run/apache2.pid"
-ENV APACHE_RUN_USER="www-data"
-ENV APACHE_RUN_GROUP="www-data"
-ENV APACHE_LOG_DIR="/var/log/apache2"
+<hr>
 
-ADD site.tar /var/www/html
+![25](png/asg-3.png)
+![26](png/asg-3.1.png)
+![27](png/asg-3.2.png)
 
-LABEL description = "Apache webserver 1.0"
+<hr>
 
-VOLUME /var/www/html
+![28](png/asg-4.png)
+![29](png/asg-4.1.png)
+![30](png/asg-4.2.png)
+![31](png/asg-4.3.png)
 
-EXPOSE 80
+<hr>
 
-ENTRYPOINT ["/usr/sbin/apachectl"]
+![31](png/asg-6.png)
 
-CMD ["-D","FOREGROUND"]
-```
+<hr>
 
-Criar a imagem:
-- docker image build -t nome-imagem .
+9- Verifique se foi criada as instancias.
 
-Executar o container e ser feliz:
-- docker run -dti -p 80:80 --name nome-container nome-imagem
+![32](png/f1.png)
 
-![dificil.1.png](png/final.png)
+10- Tente acessar o Wordpress pelo IP publico das maquinas.
 
-</details>
+EC2 1 IP: 54.86.187.15
+
+![33](png/f2.png)
+
+EC2 2 IP: 3.89.221.227
+
+![34](png/f3.png)
+
+11- Tente entrar pelo DNS do `LB`.
+
+![35](png/f4.png)
+
+12- Analisar os dados no `CloudWatch`.
+
+![35](png/cloudwatch.png)
+
 </div>
